@@ -226,4 +226,22 @@
   <xacro:samll_wheel prefix="left_small_wheel" x_reflect="-1" y_reflect="1" />
   <xacro:samll_wheel prefix="right_small_wheel" x_reflect="-1" y_reflect="-1"/>
 
+  <!-- a rabbit -->
+  <joint name="base_rabbit_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="rabbit_link" />
+    <origin xyz="-0.2 0 -0.08" />
+  </joint>
+  <link name="rabbit_link">
+    <xacro:property name="rabbit_scale" value="3" />
+    <visual>
+      <origin xyz="0 0 0.0" rpy="${pi/2} 0 ${pi/2}" />
+      <geometry>
+        <mesh filename="package://nav2_sample/meshes/rabbit.STL" scale="${rabbit_scale} ${rabbit_scale*1.2} ${rabbit_scale}"/>
+      </geometry>
+      <material name="orange" />
+    </visual>
+    <xacro:box_inertia m="40.0" w="0.2" d="0.2" h="0.5"/>
+  </link>
+
 </robot>

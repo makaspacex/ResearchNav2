@@ -2,15 +2,15 @@
   <model name='wheelchair_base'>
     <link name='base_footprint'>
       <inertial>
-        <pose>0 0.166667 0.665 0 -0 0</pose>
-        <mass>120</mass>
+        <pose>-0.05 0.125 0.6025 0 -0 0</pose>
+        <mass>160</mass>
         <inertia>
-          <ixx>5.24142</ixx>
-          <ixy>1.18105e-15</ixy>
-          <ixz>-1.0198e-15</ixz>
-          <iyy>7.74667</iyy>
-          <iyz>-1.7</iyz>
-          <izz>7.10542</izz>
+          <ixx>8.91642</ixx>
+          <ixy>-1</ixy>
+          <ixz>-1.5</ixz>
+          <iyy>11.7883</iyy>
+          <iyz>-2.95</iyz>
+          <izz>9.40542</izz>
         </inertia>
       </inertial>
       <collision name='base_footprint_fixed_joint_lump__base_link_collision'>
@@ -44,7 +44,16 @@
           </script>
         </material>
       </visual>
-      <visual name='base_footprint_fixed_joint_lump__laser_link_visual_1'>
+      <visual name='base_footprint_fixed_joint_lump__rabbit_link_visual_1'>
+        <pose>-0.2 0 0.415 1.5708 -0 1.5708</pose>
+        <geometry>
+          <mesh>
+            <scale>3 3.6 3</scale>
+            <uri>model://nav2_sample/meshes/rabbit.STL</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <visual name='base_footprint_fixed_joint_lump__laser_link_visual_2'>
         <pose>0 0.25 0.745 0 -0 0</pose>
         <geometry>
           <cylinder>
@@ -59,7 +68,7 @@
           </script>
         </material>
       </visual>
-      <visual name='base_footprint_fixed_joint_lump__imu_link_visual_2'>
+      <visual name='base_footprint_fixed_joint_lump__imu_link_visual_3'>
         <pose>0 0.25 0.755 0 -0 0</pose>
         <geometry>
           <box>
