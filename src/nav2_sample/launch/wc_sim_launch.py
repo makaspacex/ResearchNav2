@@ -130,7 +130,7 @@ def generate_launch_description():
 
     declare_use_rviz_cmd = DeclareLaunchArgument(
         'use_rviz',
-        default_value='False',
+        default_value='True',
         description='Whether to start RVIZ')
 
     declare_simulator_cmd = DeclareLaunchArgument(
@@ -150,12 +150,13 @@ def generate_launch_description():
 
     declare_robot_name_cmd = DeclareLaunchArgument(
         'robot_name',
-        default_value='turtlebot3_waffle',
+        default_value='wheelchair_base',
         description='name of the robot')
 
     declare_robot_sdf_cmd = DeclareLaunchArgument(
         'robot_sdf',
-        default_value=os.path.join(bringup_dir, 'worlds', 'waffle.model'),
+        default_value=os.path.join(bringup_dir, 'worlds', 'wheel_chair.model'),
+        # default_value=os.path.join(bringup_dir, 'worlds', 'waffle.model'),
         description='Full path to robot sdf file to spawn the robot in gazebo')
 
     # Specify the actions
@@ -174,9 +175,9 @@ def generate_launch_description():
     urdf = os.path.join(bringup_dir, 'urdf', 'wheelchair_base.urdf')
     # urdf = os.path.join(bringup_dir, 'urdf', 'turtlebot3_waffle.urdf')
     # with open(urdf, 'r') as infp:
-    #     robot_description = infp.read()
+        # robot_description = infp.read()
     robot_description = ParameterValue(Command(['xacro ', str(urdf)]), value_type=str)
-
+    
     start_robot_state_publisher_cmd = Node(
         condition=IfCondition(use_robot_state_pub),
         package='robot_state_publisher',
@@ -206,12 +207,13 @@ def generate_launch_description():
         launch_arguments={'namespace': namespace,
                           'use_namespace': use_namespace,
                           'rviz_config': rviz_config_file}.items())
-
+    
     wc_base_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(launch_dir, 'wc_base.py')),
         condition=IfCondition(use_rviz),
-        launch_arguments={'namespace': namespace,
+        launch_arguments={ 'use_sim_time': use_sim_time,
+                           'namespace': namespace,
                           'use_namespace': use_namespace}.items())
     bringup_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
@@ -255,9 +257,9 @@ def generate_launch_description():
     ld.add_action(start_gazebo_spawner_cmd)
 
     # Add the actions to launch all of the navigation nodes
-    ld.add_action(start_robot_state_publisher_cmd)
+    # ld.add_action(start_robot_state_publisher_cmd)
+    ld.add_action(wc_base_cmd)
     ld.add_action(rviz_cmd)
-    # ld.add_action(wc_base_cmd)
     ld.add_action(bringup_cmd)
 
     return ld
