@@ -1,59 +1,13 @@
 <?xml version="1.0"?>
-<robot name="turtlebot3_waffle" xmlns:xacro="http://ros.org/wiki/xacro">
-  <!-- <xacro:include filename="$(find turtlebot3_description)/urdf/common_properties.urdf"/>
-
-  <xacro:property name="r200_cam_rgb_px" value="0.005"/>
-  <xacro:property name="r200_cam_rgb_py" value="0.018"/>
-  <xacro:property name="r200_cam_rgb_pz" value="0.013"/>
-  <xacro:property name="r200_cam_depth_offset" value="0.01"/> -->
-
-  <!-- Init colour -->
-  <material name="black">
-    <color rgba="0.0 0.0 0.0 1.0" />
-  </material>
-
-  <material name="dark">
-    <color rgba="0.3 0.3 0.3 1.0" />
-  </material>
-
-  <material name="light_black">
-    <color rgba="0.4 0.4 0.4 1.0" />
-  </material>
-
-  <material name="blue">
-    <color rgba="0.0 0.0 0.8 1.0" />
-  </material>
-
-  <material name="green">
-    <color rgba="0.0 0.8 0.0 1.0" />
-  </material>
-
-  <material name="grey">
-    <color rgba="0.5 0.5 0.5 1.0" />
-  </material>
-
-  <material name="orange">
-    <color rgba="1.0 0.4235 0.0392 1.0" />
-  </material>
-
-  <material name="brown">
-    <color rgba="0.8706 0.8118 0.7647 1.0" />
-  </material>
-
-  <material name="red">
-    <color rgba="0.8 0.0 0.0 1.0" />
-  </material>
-
-  <material name="white">
-    <color rgba="1.0 1.0 1.0 1.0" />
-  </material>
+<robot name="wheelchair_base" xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:include filename="/home/makafly/Desktop/ResearchNav2/src/nav2_sample/urdf/wc_property.xacro"/>
 
   <link name="base_footprint" />
 
   <joint name="base_joint" type="fixed">
     <parent link="base_footprint" />
     <child link="base_link" />
-    <origin xyz="0 0 0.54" rpy="0 0 0" />
+    <origin xyz="0 0 ${(wheel_radius+wheel_zoff)}" rpy="0 0 0" />
   </joint>
 
   <!-- base link -->
@@ -61,18 +15,17 @@
     <visual>
       <origin xyz="0 0 0.0" rpy="0 0 0" />
       <geometry>
-        <box size="1.18 0.6 0.65" />
+        <box size="${base_length} ${base_width} ${base_height}"/>
       </geometry>
-      <material name="blue">
-        <color rgba="0.1 0.1 1.0 0.5" />
-      </material>
+      <material name="light_blue" />
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <box size="1.18 0.6 0.65" />
+        <box size="${base_length} ${base_width} ${base_height}"/>
       </geometry>
     </collision>
+    <xacro:box_inertia m="40.0" w="${base_width}" d="${base_length}" h="${base_height}"/>
   </link>
 
   <!-- laser joint -->
@@ -93,6 +46,7 @@
         <color rgba="0.0 0.0 0.0 0.5" />
       </material>
     </visual>
+
   </link>
 
   <!-- imu joint -->
@@ -111,8 +65,13 @@
     </visual>
   </link>
 
+  <xacro:wheel prefix="left_wheel" x_reflect="-1" y_reflect="1" wheel_radius="${wheel_radius}" wheel_width="${wheel_width}" wheel_xoff="${wheel_xoff}" wheel_zoff="${wheel_zoff}" />
+  <xacro:wheel prefix="right_wheel" x_reflect="-1" y_reflect="-1" wheel_radius="${wheel_radius}" wheel_width="${wheel_width}" wheel_xoff="${wheel_xoff}" wheel_zoff="${wheel_zoff}" />
 
-  <link name="left_wheel_link">
+  <xacro:wheel prefix="left_small_wheel" x_reflect="-1" y_reflect="1" wheel_radius="${front_wheel_radius}" wheel_width="${wheel_width}" wheel_xoff="${caster_xoff}" wheel_zoff="${wheel_zoff + wheel_radius/2}" />
+  <xacro:wheel prefix="right_small_wheel" x_reflect="-1" y_reflect="-1" wheel_radius="${front_wheel_radius}" wheel_width="${wheel_width}" wheel_xoff="${caster_xoff}" wheel_zoff="${wheel_zoff + wheel_radius/2}" />
+
+  <!-- <link name="left_wheel_link">
     <visual>
       <origin xyz="0 0 0" rpy="1.57079 0 0" />
       <geometry>
@@ -160,9 +119,9 @@
     <child link="right_wheel_link" />
     <origin xyz="-0.24 -0.27 -0.27" />
     <axis xyz="0 1 0" />
-  </joint>
+  </joint> -->
 
-
+<!-- 
   <link name="left_small_wheel_link">
     <visual>
       <origin xyz="0 0 0" rpy="1.57079 0 0" />
@@ -211,7 +170,7 @@
     <child link="right_small_wheel_link" />
     <origin xyz="0.40 -0.27 -0.42" />
     <axis xyz="0 1 0" />
-  </joint>
+  </joint> -->
 
 
   <!-- <link name="caster_link">
