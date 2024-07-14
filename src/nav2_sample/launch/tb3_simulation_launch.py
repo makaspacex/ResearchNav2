@@ -24,12 +24,11 @@ from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
-from launch.substitutions import Command
-from launch_ros.parameter_descriptions import ParameterValue
+
 
 def generate_launch_description():
     # Get the launch directory
-    bringup_dir = get_package_share_directory('nav2_sample')
+    bringup_dir = get_package_share_directory('nav2_bringup')
     launch_dir = os.path.join(bringup_dir, 'launch')
 
     # Create the launch configuration variables
@@ -130,12 +129,12 @@ def generate_launch_description():
 
     declare_use_rviz_cmd = DeclareLaunchArgument(
         'use_rviz',
-        default_value='False',
+        default_value='True',
         description='Whether to start RVIZ')
 
     declare_simulator_cmd = DeclareLaunchArgument(
         'headless',
-        default_value='False',
+        default_value='True',
         description='Whether to execute gzclient)')
 
     declare_world_cmd = DeclareLaunchArgument(
@@ -144,8 +143,7 @@ def generate_launch_description():
         #              https://github.com/ROBOTIS-GIT/turtlebot3_simulations/issues/91
         # default_value=os.path.join(get_package_share_directory('turtlebot3_gazebo'),
         # worlds/turtlebot3_worlds/waffle.model')
-        # default_value=os.path.join(bringup_dir, 'worlds', 'world_only.model'),
-        default_value=os.path.join(bringup_dir, 'worlds', 'fx_floor10.world'),
+        default_value=os.path.join(bringup_dir, 'worlds', 'world_only.model'),
         description='Full path to world model file to load')
 
     declare_robot_name_cmd = DeclareLaunchArgument(
@@ -171,11 +169,9 @@ def generate_launch_description():
         cmd=['gzclient'],
         cwd=[launch_dir], output='screen')
 
-    urdf = os.path.join(bringup_dir, 'urdf', 'wheelchair_base.urdf')
-    # urdf = os.path.join(bringup_dir, 'urdf', 'turtlebot3_waffle.urdf')
-    # with open(urdf, 'r') as infp:
-    #     robot_description = infp.read()
-    robot_description = ParameterValue(Command(['xacro ', str(urdf)]), value_type=str)
+    urdf = os.path.join(bringup_dir, 'urdf', 'turtlebot3_waffle.urdf')
+    with open(urdf, 'r') as infp:
+        robot_description = infp.read()
 
     start_robot_state_publisher_cmd = Node(
         condition=IfCondition(use_robot_state_pub),
@@ -207,12 +203,6 @@ def generate_launch_description():
                           'use_namespace': use_namespace,
                           'rviz_config': rviz_config_file}.items())
 
-    wc_base_cmd = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(launch_dir, 'wc_base.py')),
-        condition=IfCondition(use_rviz),
-        launch_arguments={'namespace': namespace,
-                          'use_namespace': use_namespace}.items())
     bringup_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(launch_dir, 'bringup_launch.py')),
@@ -257,7 +247,6 @@ def generate_launch_description():
     # Add the actions to launch all of the navigation nodes
     ld.add_action(start_robot_state_publisher_cmd)
     ld.add_action(rviz_cmd)
-    # ld.add_action(wc_base_cmd)
     ld.add_action(bringup_cmd)
 
     return ld

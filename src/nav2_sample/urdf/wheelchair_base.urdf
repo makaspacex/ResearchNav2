@@ -7,17 +7,17 @@
   <joint name="base_joint" type="fixed">
     <parent link="base_footprint" />
     <child link="base_link" />
-    <origin xyz="0 0 ${(wheel_radius+wheel_zoff)}" rpy="0 0 0" />
+    <origin xyz="0 0 ${(big_wheel_radius+wheel_zoff)}" rpy="0 0 0" />
   </joint>
 
   <!-- base link -->
   <link name="base_link">
     <visual>
-      <origin xyz="0 0 0.0" rpy="0 0 0" />
+      <origin xyz="0.0 0.025 0.0" rpy="${pi/2} 0 ${-pi/2}" />
       <geometry>
-        <box size="${base_length} ${base_width} ${base_height}"/>
+        <mesh filename="package://nav2_sample/meshes/robot_base.STL" scale="1.0 1.0 1.0"/>
       </geometry>
-      <material name="light_blue" />
+      <material name="white" />
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -32,7 +32,7 @@
   <joint name="laser_joint" type="fixed">
     <parent link="base_link" />
     <child link="laser_link" />
-    <origin xyz="0.0 0.2 0.1" />
+    <origin xyz="0.0 0.25 0.1" />
   </joint>
 
   <!-- laser link -->
@@ -42,18 +42,16 @@
       <geometry>
         <cylinder length="0.02" radius="0.02" />
       </geometry>
-      <material name="black">
-        <color rgba="0.0 0.0 0.0 0.5" />
-      </material>
+      <material name="black" />
     </visual>
-
+    <xacro:cylinder_inertia m="40.0" r="0.02" h="0.02"/>
   </link>
 
   <!-- imu joint -->
   <joint name="imu_joint" type="fixed">
-    <parent link="base_link" />
+    <parent link="laser_link" />
     <child link="imu_link" />
-    <origin xyz="0 0 0.30" />
+    <origin xyz="0 0 0.01" />
   </joint>
 
   <link name="imu_link">
@@ -62,135 +60,15 @@
       <geometry>
         <box size="0.02 0.02 0.02" />
       </geometry>
+      <material name="orange" />
     </visual>
+    <xacro:box_inertia m="40.0" w="0.02" d="0.02" h="0.02"/>
   </link>
 
-  <xacro:wheel prefix="left_wheel" x_reflect="-1" y_reflect="1" wheel_radius="${wheel_radius}" wheel_width="${wheel_width}" wheel_xoff="${wheel_xoff}" wheel_zoff="${wheel_zoff}" />
-  <xacro:wheel prefix="right_wheel" x_reflect="-1" y_reflect="-1" wheel_radius="${wheel_radius}" wheel_width="${wheel_width}" wheel_xoff="${wheel_xoff}" wheel_zoff="${wheel_zoff}" />
+  <xacro:wheel prefix="left_wheel" x_reflect="-1" y_reflect="1" />
+  <xacro:wheel prefix="right_wheel" x_reflect="-1" y_reflect="-1" />
 
-  <xacro:wheel prefix="left_small_wheel" x_reflect="-1" y_reflect="1" wheel_radius="${front_wheel_radius}" wheel_width="${wheel_width}" wheel_xoff="${caster_xoff}" wheel_zoff="${wheel_zoff + wheel_radius/2}" />
-  <xacro:wheel prefix="right_small_wheel" x_reflect="-1" y_reflect="-1" wheel_radius="${front_wheel_radius}" wheel_width="${wheel_width}" wheel_xoff="${caster_xoff}" wheel_zoff="${wheel_zoff + wheel_radius/2}" />
-
-  <!-- <link name="left_wheel_link">
-    <visual>
-      <origin xyz="0 0 0" rpy="1.57079 0 0" />
-      <geometry>
-        <cylinder length="0.05" radius="0.27" />
-      </geometry>
-      <material name="black">
-        <color rgba="0.0 0.0 0.0 0.5" />
-      </material>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <cylinder length="0.2" radius="0.27" />
-      </geometry>
-    </collision>
-  </link>
-
-  <joint name="left_wheel_joint" type="continuous">
-    <parent link="base_link" />
-    <child link="left_wheel_link" />
-    <origin xyz="-0.24 0.27 -0.27" />
-    <axis xyz="0 1 0" />
-  </joint>
-
-  <link name="right_wheel_link">
-    <visual>
-      <origin xyz="0 0 0" rpy="1.57079 0 0" />
-      <geometry>
-        <cylinder length="0.05" radius="0.27" />
-      </geometry>
-      <material name="black">
-        <color rgba="0.0 0.0 0.0 0.5" />
-      </material>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <cylinder length="0.2" radius="0.27" />
-      </geometry>
-    </collision>
-  </link>
-
-  <joint name="right_wheel_joint" type="continuous">
-    <parent link="base_link" />
-    <child link="right_wheel_link" />
-    <origin xyz="-0.24 -0.27 -0.27" />
-    <axis xyz="0 1 0" />
-  </joint> -->
-
-<!-- 
-  <link name="left_small_wheel_link">
-    <visual>
-      <origin xyz="0 0 0" rpy="1.57079 0 0" />
-      <geometry>
-        <cylinder length="0.04" radius="0.12" />
-      </geometry>
-      <material name="black">
-        <color rgba="0.0 0.0 0.0 0.5" />
-      </material>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <cylinder length="0.2" radius="0.12" />
-      </geometry>
-    </collision>
-  </link>
-
-  <joint name="left_small_wheel_joint" type="continuous">
-    <parent link="base_link" />
-    <child link="left_small_wheel_link" />
-    <origin xyz="0.40 0.27 -0.42" />
-    <axis xyz="0 1 0" />
-  </joint>
-
-  <link name="right_small_wheel_link">
-    <visual>
-      <origin xyz="0 0 0" rpy="1.57079 0 0" />
-      <geometry>
-        <cylinder length="0.04" radius="0.12" />
-      </geometry>
-      <material name="black">
-        <color rgba="0.0 0.0 0.0 0.5" />
-      </material>
-    </visual>
-    <collision>
-      <origin xyz="0 0 0" rpy="0 0 0" />
-      <geometry>
-        <cylinder length="0.2" radius="0.12" />
-      </geometry>
-    </collision>
-  </link>
-
-  <joint name="right_small_wheel_joint" type="continuous">
-    <parent link="base_link" />
-    <child link="right_small_wheel_link" />
-    <origin xyz="0.40 -0.27 -0.42" />
-    <axis xyz="0 1 0" />
-  </joint> -->
-
-
-  <!-- <link name="caster_link">
-    <visual>
-      <origin xyz="0 0 0" rpy="1.57079 0 0"/>
-      <geometry>
-          <sphere radius="0.016"/>
-      </geometry>
-        <material name="black">
-          <color rgba="0.0 0.0 0.0 0.5" /> 
-        </material>
-    </visual>
-  </link>
-    
-  <joint name="caster_joint" type="fixed">
-      <parent link="base_link" />
-      <child link="caster_link" />
-      <origin xyz="0.06 0.0 -0.076" />
-      <axis xyz="0 1 0" />
-  </joint> -->
-
+  <xacro:samll_wheel prefix="left_small_wheel" x_reflect="-1" y_reflect="1" />
+  <xacro:samll_wheel prefix="right_small_wheel" x_reflect="-1" y_reflect="-1"/>
 
 </robot>
