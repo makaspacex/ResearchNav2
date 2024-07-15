@@ -27,6 +27,14 @@ from launch_ros.actions import Node
 from launch.substitutions import Command
 from launch_ros.parameter_descriptions import ParameterValue
 
+import argparse
+
+def get_opts():
+    parser = argparse.ArgumentParser()
+    bringup_dir = get_package_share_directory('nav2_sample')
+    parser.add_argument("-robot_urdf", type=str, default=os.path.join(bringup_dir, 'urdf', 'wheelchair_base.urdf'), required=False)
+    return parser.parse_args()
+
 def generate_launch_description():
     # Get the launch directory
     bringup_dir = get_package_share_directory('nav2_sample')
@@ -57,7 +65,11 @@ def generate_launch_description():
             'P': LaunchConfiguration('pitch', default='0.00'),
             'Y': LaunchConfiguration('yaw', default='0.00')}
     robot_name = LaunchConfiguration('robot_name')
+    robot_urdf = LaunchConfiguration('robot_urdf')
     robot_sdf = LaunchConfiguration('robot_sdf')
+    
+    # opts = get_opts()
+    # robot_urdf = opts.robot_urdf
 
     # Map fully qualified names to relative ones so the node's namespace can be prepended.
     # In case of the transforms (tf), currently, there doesn't seem to be a better alternative
@@ -78,7 +90,7 @@ def generate_launch_description():
         'use_namespace',
         default_value='false',
         description='Whether to apply a namespace to the navigation stack')
-
+    
     declare_slam_cmd = DeclareLaunchArgument(
         'slam',
         default_value='False',
@@ -87,7 +99,7 @@ def generate_launch_description():
     declare_map_yaml_cmd = DeclareLaunchArgument(
         'map',
         default_value=os.path.join(
-            bringup_dir, 'maps', 'turtlebot3_world.yaml'),
+            bringup_dir, 'maps', 'fx_floor10.yaml'),
         description='Full path to map file to load')
 
     declare_use_sim_time_cmd = DeclareLaunchArgument(
@@ -153,10 +165,14 @@ def generate_launch_description():
         default_value='wheelchair_base',
         description='name of the robot')
 
+    declare_robot_urdf_cmd = DeclareLaunchArgument(
+        'robot_urdf',
+        default_value=os.path.join(bringup_dir, 'urdf', 'wheelchair_base.urdf'),
+        description='path of robot urdf')
+
     declare_robot_sdf_cmd = DeclareLaunchArgument(
         'robot_sdf',
         default_value=os.path.join(bringup_dir, 'worlds', 'wheel_chair.model'),
-        # default_value=os.path.join(bringup_dir, 'worlds', 'waffle.model'),
         description='Full path to robot sdf file to spawn the robot in gazebo')
 
     # Specify the actions
@@ -172,11 +188,11 @@ def generate_launch_description():
         cmd=['gzclient'],
         cwd=[launch_dir], output='screen')
 
-    urdf = os.path.join(bringup_dir, 'urdf', 'wheelchair_base.urdf')
-    # urdf = os.path.join(bringup_dir, 'urdf', 'turtlebot3_waffle.urdf')
-    # with open(urdf, 'r') as infp:
+    robot_urdf = os.path.join(bringup_dir, 'urdf', 'wheelchair_base.urdf')
+    # robot_urdf = os.path.join(bringup_dir, 'urdf', 'turtlebot3_waffle.urdf')
+    # with open(str(robot_urdf), 'r') as infp:
         # robot_description = infp.read()
-    robot_description = ParameterValue(Command(['xacro ', str(urdf)]), value_type=str)
+    robot_description = ParameterValue(Command(['xacro ', str(robot_urdf)]), value_type=str)
     
     start_robot_state_publisher_cmd = Node(
         condition=IfCondition(use_robot_state_pub),
@@ -211,7 +227,7 @@ def generate_launch_description():
     wc_base_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(launch_dir, 'wc_base.py')),
-        condition=IfCondition(use_rviz),
+        condition=IfCondition(use_robot_state_pub),
         launch_arguments={ 'use_sim_time': use_sim_time,
                            'namespace': namespace,
                           'use_namespace': use_namespace}.items())
@@ -248,6 +264,7 @@ def generate_launch_description():
     ld.add_action(declare_simulator_cmd)
     ld.add_action(declare_world_cmd)
     ld.add_action(declare_robot_name_cmd)
+    ld.add_action(declare_robot_urdf_cmd)
     ld.add_action(declare_robot_sdf_cmd)
     ld.add_action(declare_use_respawn_cmd)
 
@@ -257,8 +274,8 @@ def generate_launch_description():
     ld.add_action(start_gazebo_spawner_cmd)
 
     # Add the actions to launch all of the navigation nodes
-    # ld.add_action(start_robot_state_publisher_cmd)
-    ld.add_action(wc_base_cmd)
+    ld.add_action(start_robot_state_publisher_cmd)
+    # ld.add_action(wc_base_cmd)
     ld.add_action(rviz_cmd)
     ld.add_action(bringup_cmd)
 

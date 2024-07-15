@@ -4,7 +4,7 @@
   <!-- ****************** ROBOT CONSTANTS *******************************  -->
   <!-- Define the size of the robot's main chassis in meters -->
   <xacro:property name="base_width" value="0.435" />
-  <xacro:property name="base_length" value="1.2" />
+  <xacro:property name="base_length" value="1.0" />
   <xacro:property name="base_height" value="0.6" />
 
   <!-- Define the shape of the robot's two back wheels in meters -->
@@ -82,6 +82,7 @@
       <child link="${prefix}_link" />
       <origin xyz="${x_reflect*wheel_xoff} ${y_reflect*(base_width/2+wheel_ygap)} ${-wheel_zoff}"  rpy="0 0 0" />
       <axis xyz="0 1 0" />
+      <limit upper="3.1415" lower="-3.1415" effort="30" velocity="5.0"/>
     </joint>
   </xacro:macro>
 
@@ -103,12 +104,13 @@
       <xacro:cylinder_inertia m="1.5" r="${s_wheel_radius}" h="${s_wheel_width}" />
     </link>
 
-    <joint name="${prefix}_joint" type="continuous">
+    <joint name="${prefix}_joint" type="fixed">
       <parent link="base_link" />
       <child link="${prefix}_link" />
       <origin xyz="${x_reflect*s_wheel_xoff} ${y_reflect*(base_width/2+s_wheel_ygap)} ${-s_wheel_zoff}"
         rpy="0 0 0" />
-      <axis xyz="0 1 0" />
+      <!-- <axis xyz="0 1 0" /> -->
+      <!-- <limit upper="3.1415" lower="-3.1415" effort="30" velocity="5.0"/> -->
     </joint>
   </xacro:macro>
 
@@ -156,7 +158,6 @@
   <material name="white">
     <color rgba="1.0 1.0 1.0 1.0" />
   </material>
-
   <link name="base_footprint" />
 
   <joint name="base_joint" type="fixed">
@@ -180,7 +181,7 @@
         <box size="${base_length} ${base_width} 0.3"/>
       </geometry>
     </collision>
-    <xacro:box_inertia m="40.0" w="${base_width}" d="${base_length}" h="${base_height}"/>
+    <xacro:box_inertia m="20.0" w="${base_width}" d="${base_length}" h="${base_height}"/>
   </link>
 
   <!-- laser joint -->
