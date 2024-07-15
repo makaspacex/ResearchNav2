@@ -188,8 +188,8 @@ def generate_launch_description():
         cmd=['gzclient'],
         cwd=[launch_dir], output='screen')
 
-    robot_urdf = os.path.join(bringup_dir, 'urdf', 'wheelchair_base.urdf')
-    # robot_urdf = os.path.join(bringup_dir, 'urdf', 'turtlebot3_waffle.urdf')
+    # robot_urdf = os.path.join(bringup_dir, 'urdf', 'wheelchair_base.urdf')
+    robot_urdf = os.path.join(bringup_dir, 'urdf', 'turtlebot3_waffle.urdf')
     # with open(str(robot_urdf), 'r') as infp:
         # robot_description = infp.read()
     robot_description = ParameterValue(Command(['xacro ', str(robot_urdf)]), value_type=str)
