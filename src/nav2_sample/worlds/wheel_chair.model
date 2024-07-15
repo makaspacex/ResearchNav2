@@ -299,8 +299,8 @@
           </contact>
           <friction>
             <ode>
-              <mu>1</mu>
-              <mu2>1</mu2>
+              <mu>2</mu>
+              <mu2>2</mu2>
             </ode>
           </friction>
         </surface>
@@ -433,8 +433,8 @@
           </contact>
           <friction>
             <ode>
-              <mu>1</mu>
-              <mu2>1</mu2>
+              <mu>2</mu>
+              <mu2>2</mu2>
             </ode>
           </friction>
         </surface>
@@ -462,7 +462,7 @@
       <right_joint>right_wheel_joint</right_joint>
       <wheel_separation>0.435</wheel_separation>
       <wheel_diameter>0.54</wheel_diameter>
-      <max_wheel_torque>60</max_wheel_torque>
+      <max_wheel_torque>30</max_wheel_torque>
       <max_wheel_acceleration>0.2</max_wheel_acceleration>
       <command_topic>cmd_vel</command_topic>
       <publish_odom>1</publish_odom>

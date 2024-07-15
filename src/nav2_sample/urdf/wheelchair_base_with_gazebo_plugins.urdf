@@ -153,7 +153,7 @@
       <wheel_diameter>0.54</wheel_diameter>
 
       <!-- limits -->
-      <max_wheel_torque>60</max_wheel_torque>
+      <max_wheel_torque>30</max_wheel_torque>
       <max_wheel_acceleration>0.2</max_wheel_acceleration>
 
       <!-- Receive velocity commands on this ROS topic -->
