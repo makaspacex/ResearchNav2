@@ -57,7 +57,7 @@ def generate_launch_description():
         condition=UnlessCondition(use_namespace),
         package='rviz2',
         executable='rviz2',
-        arguments=['-d', rviz_config_file],
+        arguments=['-d', rviz_config_file, '--ros-args', '--log-level', 'ERROR'],
         output='screen')
 
     namespaced_rviz_config_file = ReplaceString(

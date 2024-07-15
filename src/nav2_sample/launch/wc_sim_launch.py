@@ -188,8 +188,8 @@ def generate_launch_description():
         cmd=['gzclient'],
         cwd=[launch_dir], output='screen')
 
-    # robot_urdf = os.path.join(bringup_dir, 'urdf', 'wheelchair_base.urdf')
-    robot_urdf = os.path.join(bringup_dir, 'urdf', 'turtlebot3_waffle.urdf')
+    robot_urdf = os.path.join(bringup_dir, 'urdf', 'wheelchair_base.urdf')
+    # robot_urdf = os.path.join(bringup_dir, 'urdf', 'turtlebot3_waffle.urdf')
     # with open(str(robot_urdf), 'r') as infp:
         # robot_description = infp.read()
     robot_description = ParameterValue(Command(['xacro ', str(robot_urdf)]), value_type=str)
@@ -222,7 +222,8 @@ def generate_launch_description():
         condition=IfCondition(use_rviz),
         launch_arguments={'namespace': namespace,
                           'use_namespace': use_namespace,
-                          'rviz_config': rviz_config_file}.items())
+                          'rviz_config': rviz_config_file,
+                          }.items())
     
     wc_base_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(

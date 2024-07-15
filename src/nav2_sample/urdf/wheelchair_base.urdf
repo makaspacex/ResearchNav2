@@ -34,7 +34,7 @@
     <inertial>
       <origin xyz="0 0 0" rpy="${pi/2} 0 0" />
       <mass value="${m}" />
-      <inertia ixx="${(m/12) * (3*r*r + h*h)}" ixy="0" ixz="0" iyy="${(m/12) * (3*r*r + h*h)}"
+      <inertia ixx="${(m/12) * (3*r*r + h*h)}" ixy="-4.2369783e-11" ixz="0" iyy="${(m/12) * (3*r*r + h*h)}"
         iyz="0" izz="${(m/2) * (r*r)}" />
     </inertial>
   </xacro:macro>
@@ -82,11 +82,16 @@
       <child link="${prefix}_link" />
       <origin xyz="${x_reflect*wheel_xoff} ${y_reflect*(base_width/2+wheel_ygap)} ${-wheel_zoff}"  rpy="0 0 0" />
       <axis xyz="0 1 0" />
-      <limit upper="3.1415" lower="-3.1415" effort="30" velocity="5.0"/>
+      <!-- <limit upper="3.1415" lower="-3.1415" effort="30" velocity="5.0"/> -->
     </joint>
+    <gazebo reference="${prefix}_link">
+      <material>Gazebo/Black</material>
+      <mu1>1.0</mu1>  <!-- 摩擦系数 -->
+      <mu2>1.0</mu2>
+    </gazebo>
   </xacro:macro>
 
-  <xacro:macro name="samll_wheel" params="prefix x_reflect y_reflect">
+  <xacro:macro name="small_wheel" params="prefix x_reflect y_reflect">
     <link name="${prefix}_link">
       <visual>
         <origin xyz="0 0 0" rpy="0 0 ${y_reflect * pi/2}" />
@@ -104,14 +109,19 @@
       <xacro:cylinder_inertia m="1.5" r="${s_wheel_radius}" h="${s_wheel_width}" />
     </link>
 
-    <joint name="${prefix}_joint" type="fixed">
+    <joint name="${prefix}_joint" type="revolute">
       <parent link="base_link" />
       <child link="${prefix}_link" />
       <origin xyz="${x_reflect*s_wheel_xoff} ${y_reflect*(base_width/2+s_wheel_ygap)} ${-s_wheel_zoff}"
         rpy="0 0 0" />
-      <!-- <axis xyz="0 1 0" /> -->
-      <!-- <limit upper="3.1415" lower="-3.1415" effort="30" velocity="5.0"/> -->
+      <axis xyz="0 1 0" />
+      <limit upper="3.1415" lower="-3.1415" effort="30" velocity="5.0"/>
     </joint>
+    <gazebo reference="${prefix}_link">
+      <material>Gazebo/Black</material>
+      <mu1>0.001</mu1>  <!-- 摩擦系数 -->
+      <mu2>0.001</mu2>
+    </gazebo>
   </xacro:macro>
 
   <!-- Init colour -->
@@ -200,7 +210,7 @@
       </geometry>
       <material name="black" />
     </visual>
-    <xacro:cylinder_inertia m="40.0" r="0.02" h="0.02"/>
+    <xacro:cylinder_inertia m="0.02" r="0.02" h="0.02"/>
   </link>
 
   <!-- imu joint -->
@@ -218,14 +228,14 @@
       </geometry>
       <material name="orange" />
     </visual>
-    <xacro:box_inertia m="40.0" w="0.02" d="0.02" h="0.02"/>
+    <xacro:box_inertia m="0.01" w="0.02" d="0.02" h="0.02"/>
   </link>
 
   <xacro:wheel prefix="left_wheel" x_reflect="-1" y_reflect="1" />
   <xacro:wheel prefix="right_wheel" x_reflect="-1" y_reflect="-1" />
 
-  <xacro:samll_wheel prefix="left_small_wheel" x_reflect="-1" y_reflect="1" />
-  <xacro:samll_wheel prefix="right_small_wheel" x_reflect="-1" y_reflect="-1"/>
+  <xacro:small_wheel prefix="left_small_wheel" x_reflect="-1" y_reflect="1" />
+  <xacro:small_wheel prefix="right_small_wheel" x_reflect="-1" y_reflect="-1"/>
 
   <!-- a rabbit -->
   <joint name="base_rabbit_joint" type="fixed">
